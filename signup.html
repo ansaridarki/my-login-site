@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>ثبت‌نام</title>
+</head>
+<body style="background-color:#121212; color:white; font-family:sans-serif; text-align:center; padding:50px;">
+    <h1>ثبت‌نام در سایت</h1>
+    <form id="signupForm" autocomplete="off">
+        <input type="text" id="phone" placeholder="شماره تلفن"><br><br>
+        <input type="text" id="username" placeholder="نام کاربری"><br><br>
+        <input type="password" id="password" placeholder="رمز عبور"><br><br>
+        <button type="submit">ثبت‌نام</button>
+        <p id="message" style="color:lightgreen;"></p>
+    </form>
+    <p>قبلاً ثبت‌نام کرده‌اید؟ <a href="index.html" style="color:#00bcd4;">ورود</a></p>
+
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const phone = document.getElementById("phone").value.trim();
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            const user = {
+                phone: phone,
+                username: username,
+                password: password
+            };
+
+            localStorage.setItem("user", JSON.stringify(user));
+            document.getElementById("message").textContent = "ثبت‌نام با موفقیت انجام شد! حالا وارد شوید.";
+        });
+    </script>
+</body>
+</html>
