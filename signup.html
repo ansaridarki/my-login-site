@@ -1,36 +1,96 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <title>ثبت‌نام</title>
+  <meta charset="UTF-8" />
+  <title>ثبت‌نام</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      padding: 20px;
+    }
+    input, button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 250px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #6200ee;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3700b3;
+    }
+  </style>
 </head>
-<body style="background-color:#121212; color:white; font-family:sans-serif; text-align:center; padding:50px;">
-    <h1>ثبت‌نام در سایت</h1>
-    <form id="signupForm" autocomplete="off">
-        <input type="text" id="phone" placeholder="شماره تلفن"><br><br>
-        <input type="text" id="username" placeholder="نام کاربری"><br><br>
-        <input type="password" id="password" placeholder="رمز عبور"><br><br>
-        <button type="submit">ثبت‌نام</button>
-        <p id="message" style="color:lightgreen;"></p>
-    </form>
-    <p>قبلاً ثبت‌نام کرده‌اید؟ <a href="index.html" style="color:#00bcd4;">ورود</a></p>
+<body>
 
-    <script>
-        document.getElementById("signupForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const phone = document.getElementById("phone").value.trim();
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value.trim();
+  <h1>ثبت نام در سایت محمد رضا</h1>
 
-            const user = {
-                phone: phone,
-                username: username,
-                password: password
-            };
+  <form id="signupForm">
+    <input type="text" id="username" placeholder="نام کاربری" required />
+    <input type="tel" id="phone" placeholder="شماره تلفن" required />
+    <input type="password" id="password" placeholder="رمز عبور" required />
+    <button type="submit">ثبت‌نام</button>
+  </form>
 
-            localStorage.setItem("user", JSON.stringify(user));
-            document.getElementById("message").textContent = "ثبت‌نام با موفقیت انجام شد! حالا وارد شوید.";
+  <!-- Firebase SDK ها -->
+  <script type="module">
+    // Import SDK ها از CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCP23qxjfLGexBfhrPLuc_QD6T4wS_xVoM",
+      authDomain: "site-mohammadreza345.firebaseapp.com",
+      projectId: "site-mohammadreza345",
+      storageBucket: "site-mohammadreza345.firebasestorage.app",
+      messagingSenderId: "565712040500",
+      appId: "1:565712040500:web:0198628a0bc42895561061",
+      measurementId: "G-93XX3C4R53"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // هندل کردن فرم ثبت‌نام
+    const form = document.getElementById('signupForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !phone || !password) {
+        alert('لطفاً همه فیلدها را پر کنید.');
+        return;
+      }
+
+      try {
+        // افزودن سند جدید به کالکشن users
+        await addDoc(collection(db, "users"), {
+          username: username,
+          phone: phone,
+          password: password
         });
-    </script>
+
+        alert("ثبت‌نام با موفقیت انجام شد!");
+        sessionStorage.setItem("loggedInUser", username);
+        window.location.href = "dashboard.html"; // صفحه بعدی
+      } catch (error) {
+        console.error("خطا در ثبت‌نام: ", error);
+        alert("خطایی رخ داده، دوباره تلاش کنید.");
+      }
+    });
+  </script>
+
 </body>
 </html>
